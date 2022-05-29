@@ -7,6 +7,12 @@
   line-height: 1.21;
 }
 
+.popup__window_type_info .popup__title {
+  margin: 0;
+}
+
+
+
 @media screen and (max-width: 425px) {
   .popup__title {
     margin-top: 25px;

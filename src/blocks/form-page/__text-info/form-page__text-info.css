@@ -1,0 +1,11 @@
+.form-page__text-info {
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  margin-top: 15px;
+  transition: opacity ease 0.5s;
+}
+
+.form-page__text-info:hover {
+  opacity: 60%;
+}

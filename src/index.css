@@ -15,10 +15,14 @@
 @import url('./blocks/popup/popup.css');
 @import url('./blocks/form/form.css');
 @import url('./blocks/like-button/like-button.css');
+@import url('./blocks/form-page/form-page.css');
 /* blocks */
 
 /* elements */
 @import url('./blocks/header/__logo/header__logo.css');
+@import url('./blocks/header/__nav-link/header__nav-link.css');
+@import url('./blocks/header/__user-email/header__user-email.css');
+@import url('./blocks/header/__nav-wrapper/header__nav-wrapper.css');
 @import url('./blocks/profile/__image/profile__image.css');
 @import url('./blocks/profile/__info/profile__info.css');
 @import url('./blocks/profile/__name/profile__name.css');
@@ -37,11 +41,20 @@
 @import url('./blocks/popup/__title/popup__title.css');
 @import url('./blocks/popup/__preview-image/popup__preview-image.css');
 @import url('./blocks/popup/__description/popup__description.css');
+@import url('./blocks/popup/__auth-image/popup__auth-image.css');
 @import url('./blocks/form/__input/form__input.css');
 @import url('./blocks/form/__submit-button/form__submit-button.css');
 @import url('./blocks/form/__input-error/form__input-error.css');
 @import url('./blocks/profile/__image-overlay/profile__image-overlay.css');
 @import url('./blocks/profile/__edit-icon/profile__edit-icon.css');
+@import url('./blocks/form-page/__container/form-page__container.css');
+@import url('./blocks/form-page/__title/form-page__title.css');
+@import url('./blocks/form-page/__input/form-page__input.css');
+@import url('./blocks/form-page/__form/form-page__form.css');
+@import url('./blocks/form-page/__input-error/form-page__input-error.css');
+@import url('./blocks/form-page/__submit-button/form-page__submit-button.css');
+@import url('./blocks/form-page/__text-info/form-page__text-info.css');
+
 /* elements */
 
 /* modifiers */
@@ -55,7 +68,11 @@
 @import url('./blocks/form/__input-error/_active/form__input-error_active.css');
 @import url('./blocks/popup/_active/popup_active.css');
 @import url('./blocks/popup/__window/_type/popup__window_type_preview.css');
+@import url('./blocks/popup/__window/_type/popup__window_type_info.css');
+@import url('./blocks/popup/_type/popup_type_info.css');
 @import url('./blocks/form/__submit-button/_place/form__submit-button_place_delete-confirm.css');
 @import url('./blocks/form/_type/form_type_delete-confirm.css');
+@import url('./blocks/form-page/__input-error/_active/form-page__input-error_active.css');
+
 
 /* modifiers */

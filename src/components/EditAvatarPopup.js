@@ -10,7 +10,7 @@ export default function EditAvatarPopup(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onUpdateAvatar(imageInput.current.value);
+    onUpdateAvatar(imageInput);
   };
 
   const handleInput = (event) => {
@@ -20,11 +20,9 @@ export default function EditAvatarPopup(props) {
     });
     if (imageInput || imageInput === '') {
       const isFormValid = Object.values(validation).some((validity) => Boolean(validity) === false);
-      // console.log(`form is ${!isFormValid ? 'not ' : ''}valid`);
-      // console.log(`form value is ${imageInput}`);
       setIsValid(isFormValid);
     }
-    if (!isValid) setTimeout(() => setShowError(true), 2000);
+    if (!isValid) setTimeout(() => setShowError(!isValid), 2000);
   };
 
   React.useEffect(() => {

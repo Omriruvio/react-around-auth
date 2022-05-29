@@ -4,12 +4,16 @@
   margin: 0px auto 36px;
   padding-top: 45px;
   padding-bottom: 41px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 @media screen and (max-width: 920px) {
   .header {
     padding-top: 28px;
     padding-left: 27px;
+    padding-right: 27px;
   }
 }
 
