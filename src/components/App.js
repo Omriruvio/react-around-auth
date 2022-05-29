@@ -1,14 +1,11 @@
-import Header from './Header';
-import Main from './Main';
-import Footer from './Footer';
-import DeleteConfirmPopup from './DeleteConfirmPopup';
-import ImagePopup from './ImagePopup';
 import React, { useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import api from '../utils/api';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import EditProfilePopup from './EditProfilePopup';
-import EditAvatarPopup from './EditAvatarPopup';
-import AddPlacePopup from './AddPlacePopup';
+import Page from './Page';
+import Login from './Login';
+import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -23,6 +20,7 @@ function App() {
   const [editProfileButtonText, setEditProfileButtonText] = React.useState('Save');
   const [editAvatarButtonText, setEditAvatarButtonText] = React.useState('Save');
   const [deleteConfirmButtonText, setDeleteConfirmButtonText] = React.useState('Yes');
+  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
 
   const handleCardClick = (card) => setSelectedCard(card);
 
@@ -125,50 +123,45 @@ function App() {
     return () => document.removeEventListener('keydown', closeByEscape);
   }, []);
 
+  const pageProps = {
+    isEditProfilePopupOpen,
+    isAddPlacePopupOpen,
+    isEditAvatarPopupOpen,
+    isConfirmPopupOpen,
+    selectedCard,
+    addPlacebuttonText,
+    editProfileButtonText,
+    editAvatarButtonText,
+    deleteConfirmButtonText,
+    isLoggedIn,
+    handleCardClick,
+    handleEditAvatarClick,
+    handleEditProfileClick,
+    handleAddNewCardClick,
+    handlePopupClick,
+    handleUpdateAvatar,
+    handleUpdateUser,
+    handleAddPlaceSubmit,
+    handleCardLike,
+    handleCardDeleteClick,
+    handleConfirmDeleteClick,
+    cards,
+  };
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="page">
-        <EditProfilePopup
-          onPopupClick={handlePopupClick}
-          buttonText={editProfileButtonText}
-          onUpdateUser={handleUpdateUser}
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute redirectPath="/login" isLoggedIn={isLoggedIn}>
+              <Page {...pageProps}></Page>
+            </ProtectedRoute>
+          }
         />
-        <AddPlacePopup
-          onPopupClick={handlePopupClick}
-          buttonText={addPlacebuttonText}
-          onAddPlaceSubmit={handleAddPlaceSubmit}
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-        />
-        <EditAvatarPopup
-          onPopupClick={handlePopupClick}
-          buttonText={editAvatarButtonText}
-          onUpdateAvatar={handleUpdateAvatar}
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-        />
-        <DeleteConfirmPopup
-          onPopupClick={handlePopupClick}
-          onDeleteConfirm={handleConfirmDeleteClick}
-          isOpen={isConfirmPopupOpen}
-          onClose={closeAllPopups}
-          buttonText={deleteConfirmButtonText}
-        />
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} onPopupClick={handlePopupClick} />
-        <Header />
-        <Main
-          onEditProfileClick={handleEditProfileClick}
-          onAddPlaceClick={handleAddNewCardClick}
-          onEditAvatarClick={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDeleteClick}
-        />
-        <Footer />
-      </div>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </CurrentUserContext.Provider>
   );
 }
