@@ -8,7 +8,9 @@ const register = (user) => {
   })
     .then((res) => res.json())
     .then((data) => {
+      if (data.error) throw new Error(data.error);
       if (data.message) throw new Error(data.message);
+      return data;
     });
 };
 

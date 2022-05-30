@@ -120,9 +120,8 @@ function App() {
     setSignupButtonText('Signing you up!');
     register({ email, password })
       .then((user) => {
-        // show cool succcess screen
+        // receives user.data._id user.data.email
         setIsAuthOkPopupOpen(true);
-        // do stuff with user.id user.email
         setCurrentUser({ ...currentUser, email });
         // form clearing as side effect - sending isloggedin prop to form page
         navigate('/signin');
@@ -145,7 +144,6 @@ function App() {
         // show cool succcess screen
         setIsAuthOkPopupOpen(true);
         // do stuff with user.token and others
-        console.log(user);
         localStorage.setItem('jwt', user.token);
         // set user logged in
         setIsLoggedIn(true);
@@ -190,23 +188,22 @@ function App() {
     const getUserInfoFromAPI = () => {
       return api.init();
     };
-    const getUserInfoFromLocalStorage = () => {
+    const getUserInfoFromToken = () => {
       const jwt = localStorage.getItem('jwt');
       if (jwt) return validateToken(jwt);
     };
 
-    Promise.all([getUserInfoFromAPI(), getUserInfoFromLocalStorage()])
+    Promise.all([getUserInfoFromAPI(), getUserInfoFromToken()])
       .then((values) => {
-        console.log('valuse in promise.all: ', values);
+        // console.log('valuse in promise.all: ', values);
         const [cards, userFromAPI] = values[0]; // handle API info
         const userFromLocal = values[1] ? values[1].data : null; // handle localstorage data
         setCards(cards);
-        setCurrentUser({ ...userFromAPI, ...userFromLocal });
+        setCurrentUser({ ...userFromLocal, ...userFromAPI });
         if (userFromLocal) {
           setIsLoggedIn(true);
           navigate('/');
         }
-        // return values;
       })
       .catch((err) => console.log(err));
   };
@@ -239,7 +236,7 @@ function App() {
     buttonText: signupButtonText,
     title: 'Sign up',
     onSubmit: handleNewUserSubmit,
-    isLoggedIn /* onSubmit, isValid, buttonClassName  */,
+    isLoggedIn,
   };
 
   const loginPageProps = {
@@ -249,7 +246,7 @@ function App() {
     buttonText: loginButtonText,
     title: 'Log in',
     onSubmit: handleUserLogin,
-    isLoggedIn /* onSubmit, isValid, buttonClassName  */,
+    isLoggedIn,
   };
 
   return (

@@ -28,7 +28,6 @@ const PageForm = (props) => {
   useEffect(() => {
     // should trigger when user successfully registered/logged in
     // reset the form fields
-    console.log('resetting inputs...');
     setInputs({});
   }, [isLoggedIn]);
 
@@ -61,7 +60,7 @@ const PageForm = (props) => {
           onChange={handleInput}
           value={inputs.passwordInput || ''}
           id="title-input"
-          type="text"
+          type="password"
           className={`form-page__input ${validation.passwordInput ? 'form__input_type_error' : ''}`}
           name="passwordInput"
           required
