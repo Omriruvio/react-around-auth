@@ -116,19 +116,15 @@ function App() {
   };
 
   const handleNewUserSubmit = ({ email, password }) => {
-    // set loading message
     setSignupButtonText('Signing you up!');
     register({ email, password })
       .then((user) => {
         // receives user.data._id user.data.email
+        // optionally log user in here
         setIsAuthOkPopupOpen(true);
-        setCurrentUser({ ...currentUser, email });
-        // form clearing as side effect - sending isloggedin prop to form page
         navigate('/signin');
-        // redirect
       })
       .catch((err) => {
-        // display cool error screen
         setIsAuthErrPopupOpen(true);
       })
       .finally(() => {
@@ -137,24 +133,17 @@ function App() {
   };
 
   const handleUserLogin = ({ email, password }) => {
-    // set loading message
     setLoginButtonText('Logging you in!');
     authenticate({ email, password })
       .then((user) => {
-        // show cool succcess screen
-        setIsAuthOkPopupOpen(true);
-        // do stuff with user.token and others
+        // receives user.token
         localStorage.setItem('jwt', user.token);
-        // set user logged in
         setIsLoggedIn(true);
         setCurrentUser({ ...currentUser, email });
-        // form clearing as side effect - sending isloggedin prop to form page
-        // redirect
         updatePageInfo();
         navigate('/');
       })
       .catch((err) => {
-        // display cool error screen
         console.log(err);
         setIsAuthErrPopupOpen(true);
       })

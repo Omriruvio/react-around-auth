@@ -10,7 +10,6 @@ const PageForm = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit({ email: inputs.emailInput, password: inputs.passwordInput });
-
     // onUpdateUser({ name: inputs['emailInput'], about: inputs['passwordInput'] });
   };
 

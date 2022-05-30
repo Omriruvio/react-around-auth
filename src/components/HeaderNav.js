@@ -23,15 +23,17 @@ const HeaderNav = (props) => {
     <div className="header__nav-wrapper">
       <span className="header__user-email">{currentUser.email}</span>
       <div className="header__nav-link" onClick={handleLogout}>
-        <Link to={'/signin'} style={{ color: 'inherit', textDecoration: 'inherit' }}>
+        <Link to={'/signin'} style={{ color: '#A9A9A9', textDecoration: 'inherit' }}>
           {'Log out'}
         </Link>
       </div>
     </div>
   ) : (
-    <Link to={linkTo} style={{ color: 'inherit', textDecoration: 'inherit' }}>
-      {linkText}
-    </Link>
+    <span className="header__nav-link">
+      <Link to={linkTo} style={{ color: 'inherit', textDecoration: 'inherit' }}>
+        {linkText}
+      </Link>
+    </span>
   );
 };
 

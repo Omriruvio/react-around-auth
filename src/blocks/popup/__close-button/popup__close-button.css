@@ -15,6 +15,13 @@
   padding: 0;
 }
 
+.popup__window_type_info .popup__close-button {
+  width: 30px;
+  height: 30px;
+  left: calc(50% - 15px);
+  top: calc(-21px - 30px)
+}
+
 .popup__close-button:hover {
   opacity: 60%;
 }
