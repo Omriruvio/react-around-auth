@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import Main from './Main';
-import Login from './Login';
 import Footer from './Footer';
 import PageForm from './PageForm';
 import ProtectedRoute from './ProtectedRoute';
@@ -14,6 +13,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import InfoTooltip from './InfoTooltip';
+import { register, authenticate, validateToken } from '../utils/auth';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -24,13 +24,16 @@ function App() {
   const [isAuthErrPopupOpen, setIsAuthErrPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [cardToDelete, setCardToDelete] = React.useState(null);
-  const [currentUser, setCurrentUser] = React.useState({ email: 'temp@email.com' });
+  const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [addPlacebuttonText, setAddPlaceButtonText] = React.useState('Create');
   const [editProfileButtonText, setEditProfileButtonText] = React.useState('Save');
   const [editAvatarButtonText, setEditAvatarButtonText] = React.useState('Save');
   const [deleteConfirmButtonText, setDeleteConfirmButtonText] = React.useState('Yes');
-  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+  const [signupButtonText, setSignupButtonText] = React.useState('Sign up');
+  const [loginButtonText, setLoginButtonText] = React.useState('Log in');
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleCardClick = (card) => setSelectedCard(card);
 
@@ -106,6 +109,56 @@ function App() {
       .finally(() => setDeleteConfirmButtonText('Yes'));
   };
 
+  const handleNewUserSubmit = ({ email, password }) => {
+    // set loading message
+    setSignupButtonText('Signing you up!');
+    register({ email, password })
+      .then((user) => {
+        // show cool succcess screen
+        setIsAuthOkPopupOpen(true);
+        // do stuff with user.id user.email
+        setCurrentUser({ ...currentUser, email });
+        // form clearing as side effect - sending isloggedin prop to form page
+        navigate('/signin');
+        // redirect
+      })
+      .catch((err) => {
+        // display cool error screen
+        setIsAuthErrPopupOpen(true);
+      })
+      .finally(() => {
+        setSignupButtonText('Sign up');
+      });
+  };
+
+  const handleUserLogin = ({ email, password }) => {
+    // set loading message
+    setLoginButtonText('Logging you in!');
+    authenticate({ email, password })
+      .then((user) => {
+        // show cool succcess screen
+        setIsAuthOkPopupOpen(true);
+        // do stuff with user.token and others
+        console.log(user);
+        localStorage.setItem('jwt', user.token);
+        // set user logged in
+        setIsLoggedIn(true);
+        setCurrentUser({ ...currentUser, email });
+        // form clearing as side effect - sending isloggedin prop to form page
+        // redirect
+        // updatePageInfo();
+        navigate('/');
+      })
+      .catch((err) => {
+        // display cool error screen
+        console.log(err);
+        setIsAuthErrPopupOpen(true);
+      })
+      .finally(() => {
+        setLoginButtonText('Log in');
+      });
+  };
+
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -116,12 +169,31 @@ function App() {
     setIsAuthErrPopupOpen(false);
   };
 
+  // const updatePageInfo = () => {
+
+  // };
+
   useEffect(() => {
-    api
-      .init()
-      .then(([cards, user]) => {
-        setCurrentUser({ ...currentUser, ...user });
+    const getUserInfoFromAPI = () => {
+      return api.init();
+    };
+    const getUserInfoFromLocalStorage = () => {
+      const jwt = localStorage.getItem('jwt');
+      if (jwt) return validateToken(jwt);
+    };
+
+    Promise.all([getUserInfoFromAPI(), getUserInfoFromLocalStorage()])
+      .then((values) => {
+        console.log('valuse in promise.all: ', values);
+        const [cards, userFromAPI] = values[0]; // handle API info
+        const userFromLocal = values[1] ? values[1].data : null; // handle localstorage data
         setCards(cards);
+        setCurrentUser({ ...userFromAPI, ...userFromLocal });
+        if (userFromLocal) {
+          setIsLoggedIn(true);
+          navigate('/');
+        }
+        // return values;
       })
       .catch((err) => console.log(err));
 
@@ -131,6 +203,30 @@ function App() {
       }
     };
 
+    // api
+    //   .init()
+    //   .then(([cards, user]) => {
+    //     console.log('old user info: ', user);
+    //     setCurrentUser({ ...currentUser, ...user });
+    //     setCards(cards);
+    //   })
+    //   .catch((err) => console.log(err));
+
+    // useEffect(() => {
+    //   console.log('loaded');
+    //   const jwt = localStorage.getItem('jwt');
+    //   if (jwt) {
+    //     validateToken(jwt)
+    //       .then((user) => {
+    //         setIsLoggedIn(true);
+    //         console.log('localstorage user info: ', user);
+    //         setCurrentUser({ ...currentUser, email: user.data.email });
+    //         navigate('/');
+    //       })
+    //       .catch((err) => console.log(err));
+    //   }
+    // }, []);
+
     document.addEventListener('keydown', closeByEscape);
     return () => document.removeEventListener('keydown', closeByEscape);
   }, []);
@@ -139,16 +235,20 @@ function App() {
     linkTextInfo: 'Already a member? Log in here!',
     redirectLink: '/signin',
     name: 'register',
-    buttonText: 'Sign up',
-    title: 'Sign up' /* onSubmit, isValid, buttonClassName  */,
+    buttonText: signupButtonText,
+    title: 'Sign up',
+    onSubmit: handleNewUserSubmit,
+    isLoggedIn /* onSubmit, isValid, buttonClassName  */,
   };
 
   const loginPageProps = {
     linkTextInfo: 'Not a member? Sign up here!',
     redirectLink: '/signup',
     name: 'login',
-    buttonText: 'Log in',
-    title: 'Log in' /* onSubmit, isValid, buttonClassName  */,
+    buttonText: loginButtonText,
+    title: 'Log in',
+    onSubmit: handleUserLogin,
+    isLoggedIn /* onSubmit, isValid, buttonClassName  */,
   };
 
   return (

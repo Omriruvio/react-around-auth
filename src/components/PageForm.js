@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const PageForm = (props) => {
-  const { children, redirectLink, name, buttonText, title, onSubmit, linkTextInfo, /*  isValid, */ buttonClassName } = props;
+  const { isLoggedIn, redirectLink, name, buttonText, title, onSubmit, linkTextInfo, /*  isValid, */ buttonClassName } = props;
   const [inputs, setInputs] = React.useState({});
   const [validation, setValidation] = React.useState({});
   const [isValid, setIsValid] = React.useState(true);
   // const currentUser = React.useContext(CurrentUserContext);
   const handleSubmit = (event) => {
     event.preventDefault();
-    // onUpdateUser({ name: inputs['profileFormNameInput'], about: inputs['profileFormTitleInput'] });
+    onSubmit({ email: inputs.emailInput, password: inputs.passwordInput });
+
+    // onUpdateUser({ name: inputs['emailInput'], about: inputs['passwordInput'] });
   };
 
   const handleInput = (event) => {
@@ -23,6 +25,13 @@ const PageForm = (props) => {
     });
   };
 
+  useEffect(() => {
+    // should trigger when user successfully registered/logged in
+    // reset the form fields
+    console.log('resetting inputs...');
+    setInputs({});
+  }, [isLoggedIn]);
+
   // React.useEffect(() => {
   //   if (isOpen) {
   //     const isFormValid = !Object.values(validation).some((validity) => Boolean(validity));
@@ -32,36 +41,36 @@ const PageForm = (props) => {
   return (
     <div className="form-page__container">
       <h2 className="form-page__title">{title}</h2>
-      <form onSubmit={onSubmit} className={`form-page__form form_${name}`} name={name}>
+      <form onSubmit={handleSubmit} className={`form-page__form form_${name}`} name={name}>
         <input
           onChange={handleInput}
-          value={inputs.profileFormNameInput || ''}
+          value={inputs.emailInput || ''}
           id="name-input"
           type="text"
-          className={`form-page__input ${validation.profileFormNameInput ? 'form__input_type_error' : ''}`}
-          name="profileFormNameInput"
+          className={`form-page__input ${validation.emailInput ? 'form__input_type_error' : ''}`}
+          name="emailInput"
           required
           minLength="2"
           maxLength="40"
           placeholder="Email"
         />
         <span id="form-page__input-error" className={`form-page__input-error ${isValid ? '' : 'form__input-error_active'}`}>
-          {validation.profileFormNameInput}
+          {validation.emailInput}
         </span>
         <input
           onChange={handleInput}
-          value={inputs.profileFormTitleInput || ''}
+          value={inputs.passwordInput || ''}
           id="title-input"
           type="text"
-          className={`form-page__input ${validation.profileFormTitleInput ? 'form__input_type_error' : ''}`}
-          name="profileFormTitleInput"
+          className={`form-page__input ${validation.passwordInput ? 'form__input_type_error' : ''}`}
+          name="passwordInput"
           required
           minLength="2"
           maxLength="200"
           placeholder="Password"
         />
         <span id="title-input-error" className={`form-page__input-error ${isValid ? '' : 'form__input-error_active'}`}>
-          {validation.profileFormTitleInput}
+          {validation.passwordInput}
         </span>
         <button disabled={!isValid} type="submit" className="button form-page__submit-button">
           {buttonText}
