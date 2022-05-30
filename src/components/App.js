@@ -13,6 +13,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import InfoTooltip from './InfoTooltip';
+import UserDetails from './UserDetails';
 import { register, authenticate, validateToken } from '../utils/auth';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
   const [isConfirmPopupOpen, setIsConfirmPopupOpen] = React.useState(false);
   const [isAuthOkPopupOpen, setIsAuthOkPopupOpen] = React.useState(false);
   const [isAuthErrPopupOpen, setIsAuthErrPopupOpen] = React.useState(false);
+  const [isUserDetailsOpen, setIsUserDetailsOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [cardToDelete, setCardToDelete] = React.useState(null);
   const [currentUser, setCurrentUser] = React.useState({});
@@ -33,7 +35,11 @@ function App() {
   const [signupButtonText, setSignupButtonText] = React.useState('Sign up');
   const [loginButtonText, setLoginButtonText] = React.useState('Log in');
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [isMobileSized, setIsMobileSized] = React.useState(window.innerWidth <= 650);
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const navigate = useNavigate();
+
+  const handleResize = () => setWindowWidth(window.innerWidth);
 
   const handleCardClick = (card) => setSelectedCard(card);
 
@@ -146,7 +152,7 @@ function App() {
         setCurrentUser({ ...currentUser, email });
         // form clearing as side effect - sending isloggedin prop to form page
         // redirect
-        // updatePageInfo();
+        updatePageInfo();
         navigate('/');
       })
       .catch((err) => {
@@ -159,6 +165,17 @@ function App() {
       });
   };
 
+  const handleLogout = () => {
+    setCurrentUser({});
+    setIsLoggedIn(false);
+    setIsUserDetailsOpen(false);
+    localStorage.removeItem('jwt');
+  };
+
+  const handleHamburgerClick = () => {
+    setIsUserDetailsOpen(!isUserDetailsOpen);
+  };
+
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -169,11 +186,7 @@ function App() {
     setIsAuthErrPopupOpen(false);
   };
 
-  // const updatePageInfo = () => {
-
-  // };
-
-  useEffect(() => {
+  const updatePageInfo = () => {
     const getUserInfoFromAPI = () => {
       return api.init();
     };
@@ -196,39 +209,27 @@ function App() {
         // return values;
       })
       .catch((err) => console.log(err));
+  };
 
+  useEffect(() => {
+    updatePageInfo();
     const closeByEscape = (e) => {
       if (e.key === 'Escape') {
         closeAllPopups();
       }
     };
 
-    // api
-    //   .init()
-    //   .then(([cards, user]) => {
-    //     console.log('old user info: ', user);
-    //     setCurrentUser({ ...currentUser, ...user });
-    //     setCards(cards);
-    //   })
-    //   .catch((err) => console.log(err));
-
-    // useEffect(() => {
-    //   console.log('loaded');
-    //   const jwt = localStorage.getItem('jwt');
-    //   if (jwt) {
-    //     validateToken(jwt)
-    //       .then((user) => {
-    //         setIsLoggedIn(true);
-    //         console.log('localstorage user info: ', user);
-    //         setCurrentUser({ ...currentUser, email: user.data.email });
-    //         navigate('/');
-    //       })
-    //       .catch((err) => console.log(err));
-    //   }
-    // }, []);
-
     document.addEventListener('keydown', closeByEscape);
     return () => document.removeEventListener('keydown', closeByEscape);
+  }, []);
+
+  useEffect(() => {
+    setIsMobileSized(windowWidth <= 650);
+  }, [windowWidth]);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const registerPageProps = {
@@ -297,7 +298,14 @@ function App() {
           buttonText={deleteConfirmButtonText}
         />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} onPopupClick={handlePopupClick} />
-        <Header isLoggedIn={isLoggedIn} />
+        {isUserDetailsOpen && isMobileSized && <UserDetails handleLogout={handleLogout} />}
+        <Header
+          isMobileSized={isMobileSized}
+          isDropDownOpen={isUserDetailsOpen}
+          handleHamburgerClick={handleHamburgerClick}
+          handleLogout={handleLogout}
+          isLoggedIn={isLoggedIn}
+        />
         <Routes>
           <Route path="/signin" element={<PageForm {...loginPageProps} />} />
           <Route path="/signup" element={<PageForm {...registerPageProps} />} />

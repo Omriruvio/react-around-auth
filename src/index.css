@@ -16,6 +16,7 @@
 @import url('./blocks/form/form.css');
 @import url('./blocks/like-button/like-button.css');
 @import url('./blocks/form-page/form-page.css');
+@import url('./blocks/user-details/user-details.css');
 /* blocks */
 
 /* elements */
@@ -73,6 +74,7 @@
 @import url('./blocks/form/__submit-button/_place/form__submit-button_place_delete-confirm.css');
 @import url('./blocks/form/_type/form_type_delete-confirm.css');
 @import url('./blocks/form-page/__input-error/_active/form-page__input-error_active.css');
+@import url('./blocks/header/__nav-link/_type/header__nav-link_type_close.css');
 
 
 /* modifiers */
