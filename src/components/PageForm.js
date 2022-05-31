@@ -2,15 +2,14 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const PageForm = (props) => {
-  const { isLoggedIn, redirectLink, name, buttonText, title, onSubmit, linkTextInfo, /*  isValid, */ buttonClassName } = props;
+  const { isLoggedIn, redirectLink, name, buttonText, title, onSubmit, linkTextInfo } = props;
   const [inputs, setInputs] = React.useState({});
-  const [validation, setValidation] = React.useState({});
-  const [isValid, setIsValid] = React.useState(true);
-  // const currentUser = React.useContext(CurrentUserContext);
+  const [errorFields, setErrorFields] = React.useState({});
+  const [isValid, setIsValid] = React.useState(false);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit({ email: inputs.emailInput, password: inputs.passwordInput });
-    // onUpdateUser({ name: inputs['emailInput'], about: inputs['passwordInput'] });
   };
 
   const handleInput = (event) => {
@@ -18,24 +17,27 @@ const PageForm = (props) => {
       ...inputs,
       [event.target.name]: event.target.value,
     });
-    setValidation({
-      ...validation,
+    setErrorFields({
+      ...errorFields,
       [event.target.name]: event.target.validationMessage,
     });
   };
 
   useEffect(() => {
-    // should trigger when user successfully registered/logged in
-    // reset the form fields
-    setInputs({});
-  }, [isLoggedIn]);
+    const areFieldsEmpty = !inputs.emailInput || !inputs.passwordInput;
+    const formHasErrors = Boolean(errorFields.emailInput || errorFields.passwordInput);
+    const isFormValid = !(areFieldsEmpty || formHasErrors);
+    setIsValid(isFormValid);
+  }, [inputs]);
 
-  // React.useEffect(() => {
-  //   if (isOpen) {
-  //     const isFormValid = !Object.values(validation).some((validity) => Boolean(validity));
-  //     setIsValid(isFormValid);
-  //   }
-  // }, [validation, isValid, isOpen]);
+  useEffect(() => {
+    // reset the form fields when user successfully registered/logged in
+    // or when component switched to another form view
+    setInputs({});
+    setErrorFields({});
+    setIsValid(false);
+  }, [isLoggedIn, title]);
+
   return (
     <div className="form-page__container">
       <h2 className="form-page__title">{title}</h2>
@@ -43,34 +45,30 @@ const PageForm = (props) => {
         <input
           onChange={handleInput}
           value={inputs.emailInput || ''}
-          id="name-input"
-          type="text"
-          className={`form-page__input ${validation.emailInput ? 'form__input_type_error' : ''}`}
+          id="email-input"
+          type="email"
+          className={`form-page__input`}
           name="emailInput"
           required
           minLength="2"
           maxLength="40"
           placeholder="Email"
         />
-        <span id="form-page__input-error" className={`form-page__input-error ${isValid ? '' : 'form__input-error_active'}`}>
-          {validation.emailInput}
-        </span>
+        <span className={`form__input-error ${isValid ? '' : 'form__input-error_active'}`}>{errorFields.emailInput}</span>
         <input
           onChange={handleInput}
           value={inputs.passwordInput || ''}
-          id="title-input"
+          id="password-input"
           type="password"
-          className={`form-page__input ${validation.passwordInput ? 'form__input_type_error' : ''}`}
+          className={`form-page__input`}
           name="passwordInput"
           required
           minLength="2"
           maxLength="200"
           placeholder="Password"
         />
-        <span id="title-input-error" className={`form-page__input-error ${isValid ? '' : 'form__input-error_active'}`}>
-          {validation.passwordInput}
-        </span>
-        <button disabled={!isValid} type="submit" className="button form-page__submit-button">
+        <span className={`form__input-error ${isValid ? '' : 'form__input-error_active'}`}>{errorFields.passwordInput}</span>
+        <button disabled={!isValid} type="submit" className={`button form-page__submit-button ${!isValid ? 'button_disabled' : ''}`}>
           {buttonText}
         </button>
         <div className="form-page__text-info">

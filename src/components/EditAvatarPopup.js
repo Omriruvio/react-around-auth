@@ -4,7 +4,7 @@ import React from 'react';
 export default function EditAvatarPopup(props) {
   const { isOpen, onClose, onUpdateAvatar, buttonText, onPopupClick } = props;
   const [imageInput, setImageInput] = React.useState('');
-  const [validation, setValidation] = React.useState({});
+  const [errorFields, setErrorFields] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
   const [showError, setShowError] = React.useState(false);
 
@@ -15,14 +15,14 @@ export default function EditAvatarPopup(props) {
 
   const handleInput = (event) => {
     setImageInput(event.target.value);
-    setValidation({
+    setErrorFields({
       [event.target.name]: event.target.validationMessage,
     });
-    if (imageInput || imageInput === '') {
-      const isFormValid = Object.values(validation).some((validity) => Boolean(validity) === false);
+    if (imageInput) {
+      const isFormValid = Object.values(errorFields).some((validity) => Boolean(validity) === false);
       setIsValid(isFormValid);
     }
-    if (!isValid) setTimeout(() => setShowError(!isValid), 2000);
+    if (!isValid) setShowError(!isValid);
   };
 
   React.useEffect(() => {
@@ -53,7 +53,7 @@ export default function EditAvatarPopup(props) {
           minLength="1"
         />
         <span id="profile-image-input-error" className={`form__input-error ${showError && 'form__input-error_active'}`}>
-          {showError && validation['profileImageUrlInput']}
+          {showError && errorFields['profileImageUrlInput']}
         </span>
       </PopupWithForm>
     </div>

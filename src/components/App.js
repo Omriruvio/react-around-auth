@@ -186,10 +186,10 @@ function App() {
       .then((values) => {
         // console.log('valuse in promise.all: ', values);
         const [cards, userFromAPI] = values[0]; // handle API info
-        const userFromLocal = values[1] ? values[1].data : null; // handle localstorage data
+        const userFromToken = values[1] ? values[1].data : null; // handle localstorage data
         setCards(cards);
-        setCurrentUser({ ...userFromLocal, ...userFromAPI });
-        if (userFromLocal) {
+        setCurrentUser({ ...userFromToken, ...userFromAPI });
+        if (userFromToken) {
           setIsLoggedIn(true);
           navigate('/');
         }
@@ -204,19 +204,17 @@ function App() {
         closeAllPopups();
       }
     };
-
+    window.addEventListener('resize', handleResize);
     document.addEventListener('keydown', closeByEscape);
-    return () => document.removeEventListener('keydown', closeByEscape);
+    return () => {
+      document.removeEventListener('keydown', closeByEscape);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   useEffect(() => {
     setIsMobileSized(windowWidth <= 650);
   }, [windowWidth]);
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const registerPageProps = {
     linkTextInfo: 'Already a member? Log in here!',

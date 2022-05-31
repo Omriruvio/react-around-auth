@@ -4,12 +4,12 @@ import React from 'react';
 export default function AddPlacePopup(props) {
   const { isOpen, onClose, onAddPlaceSubmit, buttonText, onPopupClick } = props;
   const [inputs, setInputs] = React.useState({});
-  const [validation, setValidation] = React.useState({});
+  const [errorFields, setErrorFields] = React.useState({});
   const [isValid, setIsValid] = React.useState(true);
 
   React.useEffect(() => {
     setInputs({});
-    if (!isOpen) setValidation({});
+    if (!isOpen) setErrorFields({});
   }, [isOpen]);
 
   const handleSubmit = (event) => {
@@ -22,18 +22,18 @@ export default function AddPlacePopup(props) {
       ...inputs,
       [event.target.name]: event.target.value,
     });
-    setValidation({
-      ...validation,
+    setErrorFields({
+      ...errorFields,
       [event.target.name]: event.target.validationMessage,
     });
   };
 
   React.useEffect(() => {
     if (isOpen) {
-      const formIsValid = inputs.link && inputs.title && !Object.values(validation).some((val) => Boolean(val));
+      const formIsValid = inputs.link && inputs.title && !Object.values(errorFields).some((val) => Boolean(val));
       setIsValid(formIsValid || false);
     }
-  }, [validation, inputs, isOpen]);
+  }, [errorFields, inputs, isOpen]);
 
   return (
     <div onMouseDown={onPopupClick}>
@@ -51,7 +51,7 @@ export default function AddPlacePopup(props) {
           value={inputs.title || ''}
           id="image-title-input"
           type="text"
-          className={`form__input ${validation.title && 'form__input_type_error'}`}
+          className={`form__input ${errorFields.title && 'form__input_type_error'}`}
           placeholder="Title"
           name="title"
           required
@@ -59,20 +59,20 @@ export default function AddPlacePopup(props) {
           maxLength="30"
         />
         <span id="image-title-input-error" className={`form__input-error ${isValid ? '' : 'form__input-error_active'}`}>
-          {validation.title}
+          {errorFields.title}
         </span>
         <input
           onChange={handleInput}
           value={inputs.link || ''}
           id="image-link-input"
           type="url"
-          className={`form__input ${validation.link && 'form__input_type_error'}`}
+          className={`form__input ${errorFields.link && 'form__input_type_error'}`}
           placeholder="Image link"
           name="link"
           required
         />
         <span id="image-link-input-error" className={`form__input-error ${isValid ? '' : 'form__input-error_active'}`}>
-          {validation.link}
+          {errorFields.link}
         </span>
       </PopupWithForm>
     </div>

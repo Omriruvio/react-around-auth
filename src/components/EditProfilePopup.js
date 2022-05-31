@@ -5,12 +5,12 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 export default function EditProfilePopup(props) {
   const { isOpen, onClose, onUpdateUser, buttonText, onPopupClick } = props;
   const [inputs, setInputs] = React.useState({});
-  const [validation, setValidation] = React.useState({});
+  const [errorFields, setErrorFields] = React.useState({});
   const [isValid, setIsValid] = React.useState(true);
   const currentUser = React.useContext(CurrentUserContext);
 
   React.useEffect(() => {
-    if (!isOpen) setValidation({});
+    if (!isOpen) setErrorFields({});
   }, [isOpen]);
 
   React.useEffect(() => {
@@ -24,7 +24,7 @@ export default function EditProfilePopup(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onUpdateUser({ name: inputs['profileFormNameInput'], about: inputs['profileFormTitleInput'] });
+    onUpdateUser({ name: inputs.profileFormNameInput, about: inputs.profileFormTitleInput });
   };
 
   const handleInput = (event) => {
@@ -32,18 +32,18 @@ export default function EditProfilePopup(props) {
       ...inputs,
       [event.target.name]: event.target.value,
     });
-    setValidation({
-      ...validation,
+    setErrorFields({
+      ...errorFields,
       [event.target.name]: event.target.validationMessage,
     });
   };
 
   React.useEffect(() => {
     if (isOpen) {
-      const isFormValid = !Object.values(validation).some((validity) => Boolean(validity));
+      const isFormValid = !Object.values(errorFields).some((validity) => Boolean(validity));
       setIsValid(isFormValid);
     }
-  }, [validation, isValid, isOpen]);
+  }, [errorFields, isValid, isOpen]);
 
   return (
     <div onMouseDown={onPopupClick}>
@@ -61,28 +61,28 @@ export default function EditProfilePopup(props) {
           value={inputs.profileFormNameInput || ''}
           id="name-input"
           type="text"
-          className={`form__input ${validation.profileFormNameInput && 'form__input_type_error'}`}
+          className={`form__input ${errorFields.profileFormNameInput && 'form__input_type_error'}`}
           name="profileFormNameInput"
           required
           minLength="2"
           maxLength="40"
         />
         <span id="name-input-error" className={`form__input-error ${!isValid && 'form__input-error_active'}`}>
-          {validation.profileFormNameInput}
+          {errorFields.profileFormNameInput}
         </span>
         <input
           onChange={handleInput}
           value={inputs.profileFormTitleInput || ''}
           id="title-input"
           type="text"
-          className={`form__input ${validation.profileFormTitleInput && 'form__input_type_error'}`}
+          className={`form__input ${errorFields.profileFormTitleInput && 'form__input_type_error'}`}
           name="profileFormTitleInput"
           required
           minLength="2"
           maxLength="200"
         />
         <span id="title-input-error" className={`form__input-error ${!isValid && 'form__input-error_active'}`}>
-          {validation.profileFormTitleInput}
+          {errorFields.profileFormTitleInput}
         </span>
       </PopupWithForm>
     </div>

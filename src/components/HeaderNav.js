@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import hamburgerIcon from '../images/hamburger.svg';
 import closeButton from '../images/add-close-button.svg';
