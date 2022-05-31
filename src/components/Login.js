@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = (props) => {
-  const { isLoggedIn, redirectLink, name, buttonText, title, onSubmit, linkTextInfo } = props;
+  const { isLoggedIn, buttonText, onSubmit } = props;
   const [inputs, setInputs] = React.useState({});
   const [errorFields, setErrorFields] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
@@ -28,7 +28,7 @@ const Login = (props) => {
     const formHasErrors = Boolean(errorFields.emailInput || errorFields.passwordInput);
     const isFormValid = !(areFieldsEmpty || formHasErrors);
     setIsValid(isFormValid);
-  }, [inputs]);
+  }, [inputs, errorFields]);
 
   useEffect(() => {
     // reset the form fields when user successfully registered/logged in
