@@ -17,7 +17,7 @@ const HeaderNav = (props) => {
       onClick={handleHamburgerClick}
       className={isDropDownOpen ? 'header__nav-link header__nav-link_type_close' : 'header__nav-link'}
       src={isDropDownOpen ? closeButton : hamburgerIcon}
-      alt="hamburger menu icon"
+      alt={isDropDownOpen ? 'close icon' : 'hamburger style menu icon'}
     ></img>
   ) : isLoggedIn ? (
     <div className="header__nav-wrapper">
