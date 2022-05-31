@@ -1,17 +1,17 @@
 import PopupWithForm from './PopupWithForm';
 
 const DeleteConfirmPopup = (props) => {
-  const { isOpen, onDeleteConfirm, onClose, onPopupClick, buttonText } = props;
+  const { isOpen, handleDeleteConfirm, handleCloseClick, handlePopupClick, buttonText } = props;
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onDeleteConfirm();
+    handleDeleteConfirm();
   };
 
   return (
-    <div onMouseDown={onPopupClick}>
+    <div onMouseDown={handlePopupClick}>
       <PopupWithForm
-        onClose={onClose}
+        onClose={handleCloseClick}
         name="delete-confirm"
         title="Are you sure?"
         isOpen={isOpen}

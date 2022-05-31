@@ -132,7 +132,7 @@ function App() {
       });
   };
 
-  const handleUserLogin = ({ email, password }) => {
+  const handleLogin = ({ email, password }) => {
     setLoginButtonText('Logging you in!');
     authenticate({ email, password })
       .then((user) => {
@@ -140,7 +140,6 @@ function App() {
         localStorage.setItem('jwt', user.token);
         setIsLoggedIn(true);
         setCurrentUser({ ...currentUser, email });
-        updatePageInfo();
         navigate('/');
       })
       .catch((err) => {
@@ -153,7 +152,7 @@ function App() {
   };
 
   const handleLogout = () => {
-    setCurrentUser({});
+    // setCurrentUser({});
     setIsLoggedIn(false);
     setIsUserDetailsOpen(false);
     localStorage.removeItem('jwt');
@@ -173,7 +172,7 @@ function App() {
     setIsAuthErrPopupOpen(false);
   };
 
-  const updatePageInfo = () => {
+  useEffect(() => {
     const getUserInfoFromAPI = () => {
       return api.init();
     };
@@ -182,11 +181,10 @@ function App() {
       if (jwt) return validateToken(jwt);
     };
 
-    Promise.all([getUserInfoFromAPI(), getUserInfoFromToken()])
+    Promise.allSettled([getUserInfoFromAPI(), getUserInfoFromToken()])
       .then((values) => {
-        // console.log('valuse in promise.all: ', values);
-        const [cards, userFromAPI] = values[0]; // handle API info
-        const userFromToken = values[1] ? values[1].data : null; // handle localstorage data
+        const [cards, userFromAPI] = values[0].value; // handle API info
+        const userFromToken = values[1].value ? values[1].value.data : null; // handle localstorage data
         setCards(cards);
         setCurrentUser({ ...userFromToken, ...userFromAPI });
         if (userFromToken) {
@@ -195,10 +193,7 @@ function App() {
         }
       })
       .catch((err) => console.log(err));
-  };
 
-  useEffect(() => {
-    updatePageInfo();
     const closeByEscape = (e) => {
       if (e.key === 'Escape') {
         closeAllPopups();
@@ -232,7 +227,7 @@ function App() {
     name: 'login',
     buttonText: loginButtonText,
     title: 'Log in',
-    onSubmit: handleUserLogin,
+    onSubmit: handleLogin,
     isLoggedIn,
   };
 
@@ -275,10 +270,10 @@ function App() {
           onClose={closeAllPopups}
         />
         <DeleteConfirmPopup
-          onPopupClick={handlePopupClick}
-          onDeleteConfirm={handleConfirmDeleteClick}
+          handlePopupClick={handlePopupClick}
+          handleDeleteConfirm={handleConfirmDeleteClick}
           isOpen={isConfirmPopupOpen}
-          onClose={closeAllPopups}
+          handleCloseClick={closeAllPopups}
           buttonText={deleteConfirmButtonText}
         />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} onPopupClick={handlePopupClick} />
