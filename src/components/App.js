@@ -15,6 +15,8 @@ import AddPlacePopup from './AddPlacePopup';
 import InfoTooltip from './InfoTooltip';
 import UserDetails from './UserDetails';
 import { register, authenticate, validateToken } from '../utils/auth';
+import Register from './Register';
+import Login from './Login';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -211,26 +213,6 @@ function App() {
     setIsMobileSized(windowWidth <= 650);
   }, [windowWidth]);
 
-  const registerPageProps = {
-    linkTextInfo: 'Already a member? Log in here!',
-    redirectLink: '/signin',
-    name: 'register',
-    buttonText: signupButtonText,
-    title: 'Sign up',
-    onSubmit: handleNewUserSubmit,
-    isLoggedIn,
-  };
-
-  const loginPageProps = {
-    linkTextInfo: 'Not a member? Sign up here!',
-    redirectLink: '/signup',
-    name: 'login',
-    buttonText: loginButtonText,
-    title: 'Log in',
-    onSubmit: handleLogin,
-    isLoggedIn,
-  };
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -286,8 +268,8 @@ function App() {
           isLoggedIn={isLoggedIn}
         />
         <Routes>
-          <Route path="/signin" element={<PageForm {...loginPageProps} />} />
-          <Route path="/signup" element={<PageForm {...registerPageProps} />} />
+          <Route path="/signin" element={<Login buttonText={loginButtonText} onSubmit={handleLogin} isLoggedIn />} />
+          <Route path="/signup" element={<Register onSubmit={handleNewUserSubmit} buttonText={signupButtonText} isLoggedIn />} />
           <Route
             path="/"
             element={
