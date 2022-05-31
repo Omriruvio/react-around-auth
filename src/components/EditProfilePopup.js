@@ -3,7 +3,7 @@ import React from 'react';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 
 export default function EditProfilePopup(props) {
-  const { isOpen, onClose, onUpdateUser, buttonText, onPopupClick } = props;
+  const { isOpen, onClose, onUpdateUser, isLoading, onPopupClick } = props;
   const [inputs, setInputs] = React.useState({});
   const [errorFields, setErrorFields] = React.useState({});
   const [isValid, setIsValid] = React.useState(true);
@@ -46,45 +46,44 @@ export default function EditProfilePopup(props) {
   }, [errorFields, isValid, isOpen]);
 
   return (
-    <div onMouseDown={onPopupClick}>
-      <PopupWithForm
-        isValid={isValid}
-        name="profile"
-        title="Edit profile"
-        onSubmit={handleSubmit}
-        isOpen={isOpen}
-        onClose={onClose}
-        buttonText={buttonText}
-      >
-        <input
-          onChange={handleInput}
-          value={inputs.profileFormNameInput || ''}
-          id="name-input"
-          type="text"
-          className={`form__input ${errorFields.profileFormNameInput && 'form__input_type_error'}`}
-          name="profileFormNameInput"
-          required
-          minLength="2"
-          maxLength="40"
-        />
-        <span id="name-input-error" className={`form__input-error ${!isValid && 'form__input-error_active'}`}>
-          {errorFields.profileFormNameInput}
-        </span>
-        <input
-          onChange={handleInput}
-          value={inputs.profileFormTitleInput || ''}
-          id="title-input"
-          type="text"
-          className={`form__input ${errorFields.profileFormTitleInput && 'form__input_type_error'}`}
-          name="profileFormTitleInput"
-          required
-          minLength="2"
-          maxLength="200"
-        />
-        <span id="title-input-error" className={`form__input-error ${!isValid && 'form__input-error_active'}`}>
-          {errorFields.profileFormTitleInput}
-        </span>
-      </PopupWithForm>
-    </div>
+    <PopupWithForm
+      handlePopupClick={onPopupClick}
+      isValid={isValid}
+      name="profile"
+      title="Edit profile"
+      onSubmit={handleSubmit}
+      isOpen={isOpen}
+      onClose={onClose}
+      buttonText={isLoading ? 'Updating...' : 'Save'}
+    >
+      <input
+        onChange={handleInput}
+        value={inputs.profileFormNameInput || ''}
+        id="name-input"
+        type="text"
+        className={`form__input ${errorFields.profileFormNameInput && 'form__input_type_error'}`}
+        name="profileFormNameInput"
+        required
+        minLength="2"
+        maxLength="40"
+      />
+      <span id="name-input-error" className={`form__input-error ${!isValid && 'form__input-error_active'}`}>
+        {errorFields.profileFormNameInput}
+      </span>
+      <input
+        onChange={handleInput}
+        value={inputs.profileFormTitleInput || ''}
+        id="title-input"
+        type="text"
+        className={`form__input ${errorFields.profileFormTitleInput && 'form__input_type_error'}`}
+        name="profileFormTitleInput"
+        required
+        minLength="2"
+        maxLength="200"
+      />
+      <span id="title-input-error" className={`form__input-error ${!isValid && 'form__input-error_active'}`}>
+        {errorFields.profileFormTitleInput}
+      </span>
+    </PopupWithForm>
   );
 }

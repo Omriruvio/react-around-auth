@@ -29,15 +29,10 @@ function App() {
   const [cardToDelete, setCardToDelete] = React.useState(null);
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
-  const [addPlacebuttonText, setAddPlaceButtonText] = React.useState('Create');
-  const [editProfileButtonText, setEditProfileButtonText] = React.useState('Save');
-  const [editAvatarButtonText, setEditAvatarButtonText] = React.useState('Save');
-  const [deleteConfirmButtonText, setDeleteConfirmButtonText] = React.useState('Yes');
-  const [signupButtonText, setSignupButtonText] = React.useState('Sign up');
-  const [loginButtonText, setLoginButtonText] = React.useState('Log in');
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isMobileSized, setIsMobileSized] = React.useState(window.innerWidth <= 650);
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+  const [isLoading, setIsLoading] = React.useState(false);
   const navigate = useNavigate();
 
   const handleResize = () => setWindowWidth(window.innerWidth);
@@ -53,7 +48,7 @@ function App() {
   const handlePopupClick = (event) => event.target.classList.contains('popup_active') && closeAllPopups();
 
   const handleUpdateAvatar = (url) => {
-    setEditAvatarButtonText('Updating...');
+    setIsLoading(true);
     api
       .updateUserImage(url)
       .then((user) => {
@@ -61,11 +56,11 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => console.log(err))
-      .finally(() => setEditAvatarButtonText('Save'));
+      .finally(() => setIsLoading(false));
   };
 
   const handleUpdateUser = ({ name, about }) => {
-    setEditProfileButtonText('Updating...');
+    setIsLoading(true);
     api
       .updateUserInfo({ name, about })
       .then((user) => {
@@ -73,11 +68,11 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => console.log(err))
-      .finally(() => setEditProfileButtonText('Save'));
+      .finally(() => setIsLoading(false));
   };
 
   const handleAddPlaceSubmit = ({ name, link }) => {
-    setAddPlaceButtonText('Saving...');
+    setIsLoading(true);
     api
       .submitNewCard({ name, link })
       .then((card) => {
@@ -85,7 +80,7 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => console.log(err))
-      .finally(() => setAddPlaceButtonText('Create'));
+      .finally(() => setIsLoading(false));
   };
 
   const handleCardLike = (card, isLiked) => {
@@ -103,7 +98,7 @@ function App() {
   };
 
   const handleConfirmDeleteClick = () => {
-    setDeleteConfirmButtonText('Deleting...');
+    setIsLoading(true);
     const { _id: id } = cardToDelete;
     api
       .deleteCard(id)
@@ -113,11 +108,11 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => console.log(err))
-      .finally(() => setDeleteConfirmButtonText('Yes'));
+      .finally(() => setIsLoading(false));
   };
 
   const handleNewUserSubmit = ({ email, password }) => {
-    setSignupButtonText('Signing you up!');
+    setIsLoading(true);
     register({ email, password })
       .then((user) => {
         // receives user.data._id user.data.email
@@ -128,13 +123,11 @@ function App() {
       .catch((err) => {
         setIsAuthErrPopupOpen(true);
       })
-      .finally(() => {
-        setSignupButtonText('Sign up');
-      });
+      .finally(() => setIsLoading(false));
   };
 
   const handleLogin = ({ email, password }) => {
-    setLoginButtonText('Logging you in!');
+    setIsLoading(true);
     authenticate({ email, password })
       .then((user) => {
         // receives user.token
@@ -147,9 +140,7 @@ function App() {
         console.log(err);
         setIsAuthErrPopupOpen(true);
       })
-      .finally(() => {
-        setLoginButtonText('Log in');
-      });
+      .finally(() => setIsLoading(false));
   };
 
   const handleLogout = () => {
@@ -231,21 +222,21 @@ function App() {
         />
         <EditProfilePopup
           onPopupClick={handlePopupClick}
-          buttonText={editProfileButtonText}
+          isLoading={isLoading}
           onUpdateUser={handleUpdateUser}
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
         />
         <AddPlacePopup
           onPopupClick={handlePopupClick}
-          buttonText={addPlacebuttonText}
+          isLoading={isLoading}
           onAddPlaceSubmit={handleAddPlaceSubmit}
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
         />
         <EditAvatarPopup
           onPopupClick={handlePopupClick}
-          buttonText={editAvatarButtonText}
+          isLoading={isLoading}
           onUpdateAvatar={handleUpdateAvatar}
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
@@ -255,7 +246,7 @@ function App() {
           handleDeleteConfirm={handleConfirmDeleteClick}
           isOpen={isConfirmPopupOpen}
           handleCloseClick={closeAllPopups}
-          buttonText={deleteConfirmButtonText}
+          isLoading={isLoading}
         />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} onPopupClick={handlePopupClick} />
         {isUserDetailsOpen && isMobileSized && <UserDetails handleLogout={handleLogout} />}
@@ -267,8 +258,8 @@ function App() {
           isLoggedIn={isLoggedIn}
         />
         <Routes>
-          <Route path="/signin" element={<Login buttonText={loginButtonText} onSubmit={handleLogin} isLoggedIn />} />
-          <Route path="/signup" element={<Register onSubmit={handleNewUserSubmit} buttonText={signupButtonText} isLoggedIn />} />
+          <Route path="/signin" element={<Login isLoading={isLoading} onSubmit={handleLogin} isLoggedIn />} />
+          <Route path="/signup" element={<Register onSubmit={handleNewUserSubmit} isLoading={isLoading} isLoggedIn />} />
           <Route
             path="/"
             element={

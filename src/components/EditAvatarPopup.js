@@ -2,7 +2,7 @@ import PopupWithForm from './PopupWithForm';
 import React from 'react';
 
 export default function EditAvatarPopup(props) {
-  const { isOpen, onClose, onUpdateAvatar, buttonText, onPopupClick } = props;
+  const { isOpen, onClose, onUpdateAvatar, isLoading, onPopupClick } = props;
   const [imageInput, setImageInput] = React.useState('');
   const [errorFields, setErrorFields] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
@@ -31,31 +31,30 @@ export default function EditAvatarPopup(props) {
   }, [isOpen]);
 
   return (
-    <div onMouseDown={onPopupClick}>
-      <PopupWithForm
-        isValid={isValid}
-        onSubmit={handleSubmit}
-        name="profile-image"
-        title="Change profile picture"
-        isOpen={isOpen}
-        onClose={onClose}
-        buttonText={buttonText}
-      >
-        <input
-          onInput={handleInput}
-          value={imageInput}
-          id="profile-image-input"
-          type="url"
-          className={`form__input ${showError && 'form__input_type_error'}`}
-          placeholder="Link to new profile image"
-          name="profileImageUrlInput"
-          required
-          minLength="1"
-        />
-        <span id="profile-image-input-error" className={`form__input-error ${showError && 'form__input-error_active'}`}>
-          {showError && errorFields['profileImageUrlInput']}
-        </span>
-      </PopupWithForm>
-    </div>
+    <PopupWithForm
+      handlePopupClick={onPopupClick}
+      isValid={isValid}
+      onSubmit={handleSubmit}
+      name="profile-image"
+      title="Change profile picture"
+      isOpen={isOpen}
+      onClose={onClose}
+      buttonText={isLoading ? 'Updating...' : 'Save'}
+    >
+      <input
+        onInput={handleInput}
+        value={imageInput}
+        id="profile-image-input"
+        type="url"
+        className={`form__input ${showError && 'form__input_type_error'}`}
+        placeholder="Link to new profile image"
+        name="profileImageUrlInput"
+        required
+        minLength="1"
+      />
+      <span id="profile-image-input-error" className={`form__input-error ${showError && 'form__input-error_active'}`}>
+        {showError && errorFields['profileImageUrlInput']}
+      </span>
+    </PopupWithForm>
   );
 }

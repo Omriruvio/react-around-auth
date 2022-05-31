@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = (props) => {
-  const { isLoggedIn, buttonText, onSubmit } = props;
+  const { isLoggedIn, isLoading, onSubmit } = props;
   const [inputs, setInputs] = React.useState({});
   const [errorFields, setErrorFields] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
@@ -69,7 +69,7 @@ const Login = (props) => {
         />
         <span className={`form__input-error ${isValid ? '' : 'form__input-error_active'}`}>{errorFields.passwordInput}</span>
         <button disabled={!isValid} type="submit" className={`button form-page__submit-button ${!isValid ? 'button_disabled' : ''}`}>
-          {buttonText}
+          {isLoading ? 'Logging you in...' : 'Log in'}
         </button>
         <div className="form-page__text-info">
           <Link to="/signup" style={{ color: 'inherit', textDecoration: 'inherit' }}>
