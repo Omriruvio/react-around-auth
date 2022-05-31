@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const Login = (props) => {
-  const { isLoggedIn, redirectLink, name, buttonText, title, onSubmit, linkTextInfo } = props;
+const Register = (props) => {
+  const { isLoggedIn, buttonText, onSubmit } = props;
   const [inputs, setInputs] = React.useState({});
   const [errorFields, setErrorFields] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
@@ -28,7 +28,7 @@ const Login = (props) => {
     const formHasErrors = Boolean(errorFields.emailInput || errorFields.passwordInput);
     const isFormValid = !(areFieldsEmpty || formHasErrors);
     setIsValid(isFormValid);
-  }, [inputs]);
+  }, [inputs, errorFields]);
 
   useEffect(() => {
     // reset the form fields when user successfully registered/logged in
@@ -40,8 +40,8 @@ const Login = (props) => {
 
   return (
     <div className="form-page__container">
-      <h2 className="form-page__title">Log in</h2>
-      <form onSubmit={handleSubmit} className={`form-page__form`} name="signup">
+      <h2 className="form-page__title">Sign up</h2>
+      <form onSubmit={handleSubmit} className={`form-page__form`} name="register">
         <input
           onChange={handleInput}
           value={inputs.emailInput || ''}
@@ -72,8 +72,8 @@ const Login = (props) => {
           {buttonText}
         </button>
         <div className="form-page__text-info">
-          <Link to="/signup" style={{ color: 'inherit', textDecoration: 'inherit' }}>
-            Not a member? Sign up here!
+          <Link to="/signin" style={{ color: 'inherit', textDecoration: 'inherit' }}>
+            Already a member? Log in here!
           </Link>
         </div>
       </form>
@@ -81,4 +81,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default Register;
