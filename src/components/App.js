@@ -37,14 +37,6 @@ function App() {
 
   const handleResize = () => setWindowWidth(window.innerWidth);
 
-  const handleCardClick = (card) => setSelectedCard(card);
-
-  const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
-
-  const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
-
-  const handleAddNewCardClick = () => setIsAddPlacePopupOpen(true);
-
   const handlePopupClick = (event) => event.target.classList.contains('popup_active') && closeAllPopups();
 
   const handleUpdateAvatar = (url) => {
@@ -265,10 +257,10 @@ function App() {
             element={
               <ProtectedRoute redirectPath="/signin" isLoggedIn={isLoggedIn}>
                 <Main
-                  onEditProfileClick={handleEditProfileClick}
-                  onAddPlaceClick={handleAddNewCardClick}
-                  onEditAvatarClick={handleEditAvatarClick}
-                  onCardClick={handleCardClick}
+                  onEditProfileClick={setIsEditProfilePopupOpen}
+                  onAddPlaceClick={setIsAddPlacePopupOpen}
+                  onEditAvatarClick={setIsEditAvatarPopupOpen}
+                  onCardClick={setSelectedCard}
                   cards={cards}
                   onCardLike={handleCardLike}
                   onCardDelete={handleCardDeleteClick}

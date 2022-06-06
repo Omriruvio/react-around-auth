@@ -33,7 +33,7 @@ export default function Main(props) {
       <section className="cards">
         <ul className="cards-list">
           {cards.map((card) => {
-            return (<Card key={card._id} card={card} onCardClick={onCardClick} onCardDelete={onCardDelete} onCardLike={onCardLike} />);
+            return <Card key={card._id} card={card} onCardClick={onCardClick} onCardDelete={onCardDelete} onCardLike={onCardLike} />;
           })}
         </ul>
       </section>
