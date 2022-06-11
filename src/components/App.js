@@ -198,20 +198,8 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <InfoTooltip
-          title="Success! You have now been registered."
-          isOpen={isAuthOkPopupOpen}
-          onClose={closeAllPopups}
-          isSuccessful={true}
-          onPopupClick={handlePopupClick}
-        />
-        <InfoTooltip
-          title="Oops, something went wrong! Please try again."
-          isOpen={isAuthErrPopupOpen}
-          onClose={closeAllPopups}
-          isSuccessful={false}
-          onPopupClick={handlePopupClick}
-        />
+        <InfoTooltip isOpen={isAuthOkPopupOpen} onClose={closeAllPopups} isSuccessful={true} onPopupClick={handlePopupClick} />
+        <InfoTooltip isOpen={isAuthErrPopupOpen} onClose={closeAllPopups} isSuccessful={false} onPopupClick={handlePopupClick} />
         <EditProfilePopup
           onPopupClick={handlePopupClick}
           isLoading={isLoading}
